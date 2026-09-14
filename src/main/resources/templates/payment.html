@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Payment - Golden Boiz Club</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+    <div class="particles">
+        <span></span><span></span><span></span><span></span><span></span>
+    </div>
+
+    <div class="form-container">
+        <h2>Complete Your Registration Payment</h2>
+        <p style="text-align:center; margin-bottom: 20px;">Welcome <span th:text="${member.fullName}"></span></p>
+        
+        <div style="background: #132E5A; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 1px solid #FFD700;">
+            <h3>Registration Fee: ₦50,000</h3>
+            <p>Account Name: Golden Boiz Club of Nigeria</p>
+            <p>Account No: 0123456789</p>
+            <p>Bank: First Bank</p>
+        </div>
+
+        <form th:action="@{/submitPayment/{id}(id=${member.id})}" method="post" class="register-form">
+            
+            <label>Payment Method</label>
+            <select name="paymentMethod" id="paymentMethod" required style="padding:10px; border-radius:6px; border:1px solid #FFD700; background:#0A1931; color:#FFD700;">
+                <option value="">-- Select Method --</option>
+                <option value="BANK_TRANSFER">Bank Transfer</option>
+                <option value="PAYSTACK">Pay Online with Card</option>
+            </select>
+
+            <div id="bankDetails" style="display:none;">
+                <label>Upload Teller / Transaction Reference</label>
+                <input type="text" name="paymentReference" placeholder="e.g. 123456789FT"/>
+            </div>
+
+            <div id="paystackBtn" style="display:none; text-align:center;">
+                <button type="button" onclick="payWithPaystack()" class="btn">Pay ₦10,000 Now</button>
+            </div>
+
+            <button type="submit" id="submitBank" class="btn" style="display:none;">Submit for Verification</button>
+            <a th:href="@{/}" class="back-link">← Back to Home</a>
+        </form>
+    </div>
+
+    <script src="https://js.paystack.co/v1/inline.js"></script> 
+    <script>
+        document.getElementById('paymentMethod').addEventListener('change', function(){
+            if(this.value === 'BANK_TRANSFER'){
+                document.getElementById('bankDetails').style.display = 'block';
+                document.getElementById('submitBank').style.display = 'block';
+                document.getElementById('paystackBtn').style.display = 'none';
+            } else if(this.value === 'PAYSTACK'){
+                document.getElementById('bankDetails').style.display = 'none';
+                document.getElementById('submitBank').style.display = 'none';
+                document.getElementById('paystackBtn').style.display = 'block';
+            }
+        });
+
+        function payWithPaystack(){
+            let handler = PaystackPop.setup({
+                key: 'pk_test_YOUR_PUBLIC_KEY', // replace with your paystack key
+                email: '[[${member.email}]]',
+                amount: 1000000, // 10000 * 100 kobo
+                ref: 'GBC_' + Math.floor((Math.random() * 1000000) + 1),
+                callback: function(response){
+                    window.location.href = '/verifyPayment/' + [[${member.id}]] + '?reference=' + response.reference;
+                },
+                onClose: function(){ alert('Payment window closed'); }
+            });
+            handler.openIframe();
+        }
+    </script>
+</body>
+</html>

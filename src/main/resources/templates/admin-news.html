@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Admin - Post News</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+    <div class="particles"><span></span><span></span><span></span></div>
+
+    <div class="form-container">
+        <h2>Post News / Video / Entertainment</h2>
+        <a th:href="@{/admin}" class="back-link">← Back to Dashboard</a>
+
+        <!-- IMPORTANT: enctype="multipart/form-data" for file upload -->
+        <form th:action="@{/admin/news/save}" th:object="${news}" method="post" enctype="multipart/form-data" class="register-form">
+            <label>Title</label>
+            <input type="text" th:field="*{title}" required />
+
+            <label>Category</label>
+            <select th:field="*{category}" required>
+                <option value="">-- Select --</option>
+                <option value="NEWS">News</option>
+                <option value="VIDEO">Video</option>
+                <option value="ENTERTAINMENT">Entertainment</option>
+            </select>
+
+            <label>Upload Image</label> <!-- CHANGED FROM URL TO FILE -->
+            <input type="file" name="imageFile" accept="image/*" />
+
+            <label>Content / YouTube Embed Link</label>
+            <textarea th:field="*{content}" rows="6" placeholder="Write news or paste YouTube embed link for videos"></textarea>
+
+            <button type="submit" class="btn">Post</button>
+        </form>
+
+        <h3 style="margin-top:40px;">All Posts</h3>
+        <table>
+            <tr><th>Image</th><th>Title</th><th>Category</th><th>Date</th><th>Action</th></tr>
+            <tr th:each="n : ${allNews}">
+                <td>
+                    <img th:if="${n.imageUrl}" th:src="@{${n.imageUrl}}" style="width:80px; height:60px; object-fit:cover; border-radius:5px;"/>
+                </td>
+                <td th:text="${n.title}"></td>
+                <td th:text="${n.category}"></td>
+                <td th:text="${#temporals.format(n.datePosted, 'dd MMM yyyy')}"></td>
+                <td><a th:href="@{/admin/news/delete/{id}(id=${n.id})}" style="color:red;">Delete</a></td>
+            </tr>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Golden Boiz Club of Nigeria</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #000; }
+        .nav-links { display: flex; list-style: none; gap: 25px; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { color: #FFD700; }
+        .news-card { background:#1a1a1a; border-radius:10px; overflow:hidden; border:1px solid #333; transition: transform 0.3s; }
+        .news-card:hover { transform: translateY(-5px); }
+        .btn { background:#FFD700; color:#000; padding:12px 30px; border-radius:5px; text-decoration:none; font-weight:bold; }
+        .btn:hover { background:#fff; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <h1>Golden Boiz Club of Nigeria</h1>
+            <p class="motto">Focus and Unity</p>
+        </div>
+        
+        <!-- NAV LINKS -->
+       <ul class="nav-links">
+    <li><a th:href="@{/}">Home</a></li>
+    <li><a th:href="@{/about}">About Us</a></li> <!-- NEW -->
+    <li><a th:href="@{/executives}">Executives</a></li> <!-- NEW -->
+    <li><a th:href="@{/news}">News</a></li>
+    <li><a th:href="@{/register}">Join Us</a></li>
+</ul>
+        <!-- LOGO NOW LINKS TO HOME -->
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" class="logo" style="width:80px; cursor:pointer;">
+        </a>
+    </header>
+
+    <div th:if="${param.success}" class="success-msg" style="background:#4CAF50; color:white; padding:10px; text-align:center;">
+        Application Submitted Successfully! We will contact you soon.
+    </div>
+
+    <main style="text-align:center; padding: 60px 20px;">
+        <h2>Welcome to the Official Portal</h2>
+        <p>Building Excellence Through Brotherhood</p>
+        <a th:href="@{/register}" class="btn">Join Us</a>
+    </main>
+
+    <!-- LATEST NEWS SECTION -->
+    <section style="padding: 60px 50px; background: #0a0a0a;">
+        <h2 style="text-align:center; color:#FFD700; margin-bottom:40px;">Latest News & Updates</h2>
+        
+        <!-- Show message if no news -->
+        <p th:if="${#lists.isEmpty(latestNews)}" style="text-align:center; color:#ccc;">No news posted yet. Check back soon!</p>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width:1200px; margin:0 auto;">
+            
+            <div th:each="n : ${latestNews}" class="news-card">
+                <img th:if="${n.imageUrl}" th:src="@{${n.imageUrl}}" alt="News Image" style="width:100%; height:200px; object-fit:cover;"/>
+                <div style="padding:20px;">
+                    <span th:text="${n.category}" style="background:#FFD700; color:#000; padding:3px 10px; border-radius:5px; font-size:12px; font-weight:bold;"></span>
+                    <h3 th:text="${n.title}" style="color:#fff; margin:10px 0;"></h3>
+                    <p th:text="${#strings.abbreviate(n.content, 120)}" style="color:#ccc; font-size:14px;"></p>
+                    <small th:text="${#temporals.format(n.datePosted, 'dd MMM yyyy')}" style="color:#888;"></small>
+                    <div style="margin-top:15px;">
+                        <a th:href="@{/news/{id}(id=${n.id})}" class="btn" style="padding:8px 15px; font-size:12px;">Read More</a>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+        
+        <div style="text-align:center; margin-top:40px;">
+            <a th:href="@{/news}" class="btn">View All News</a>
+        </div>
+    </section>
+
+    <footer class="site-footer" style="background:#000; padding:20px; text-align:center;">
+        <p style="color:#ccc;">© 2026 Golden Boiz Club of Nigeria. All Rights Reserved.</p>
+        <button onclick="showAdminLogin()" class="btn-admin-inline" style="background:#333; color:#fff; border:none; padding:8px 15px; border-radius:5px; cursor:pointer;">Admin Login</button>
+    </footer>
+
+    <!-- ADMIN PASSWORD POPUP -->
+    <div id="adminLoginPopup" class="delete-popup" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center; z-index:999;">
+        <div class="delete-content" style="background:#fff; padding:30px; border-radius:10px; text-align:center;">
+            <h3>🔒 Admin Access</h3>
+            <p>Enter Admin Password</p>
+            <form id="adminLoginForm">
+                <input type="password" id="adminPassword" placeholder="Enter Password" required style="padding:10px; width:100%; margin:10px 0;"/>
+                <div class="popup-buttons" style="display:flex; gap:10px; justify-content:center;">
+                    <button type="submit" class="btn-approve" style="background:#4CAF50; color:white; border:none; padding:10px 20px; border-radius:5px;">Login</button>
+                    <button type="button" onclick="hideAdminLogin()" class="btn-cancel" style="background:#f44336; color:white; border:none; padding:10px 20px; border-radius:5px;">Cancel</button>
+                </div>
+            </form>
+            <p id="errorMsg" style="color: #f44336; display: none; margin-top:10px;">Wrong Password!</p>
+        </div>
+    </div>
+
+    <script>
+        const ADMIN_PASSWORD = "Golden2025"; // <-- CHANGE THIS PASSWORD
+
+        function showAdminLogin() {
+            document.getElementById('adminLoginPopup').style.display = 'flex';
+        }
+        function hideAdminLogin() {
+            document.getElementById('adminLoginPopup').style.display = 'none';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        document.getElementById('adminLoginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            let password = document.getElementById('adminPassword').value;
+            if (password === ADMIN_PASSWORD) {
+                window.location.href = "/admin"; // Go to admin page
+            } else {
+                document.getElementById('errorMsg').style.display = 'block';
+                document.getElementById('adminPassword').value = '';
+            }
+        });
+    </script>
+</body>
+</html>

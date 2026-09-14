@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Meet The Executives - Golden Boiz Club of Nigeria</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #000; }
+        .brand h1 { color: #FFD700; margin: 0; font-size: 24px; }
+        .brand .motto { color: #fff; margin: 0; font-size: 12px; }
+        .nav-links { display: flex; list-style: none; gap: 25px; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { color: #FFD700; }
+        .exec-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap:30px; margin-top:40px; }
+        .exec-card { background:#132E5A; border:1px solid #FFD700; border-radius:10px; padding:20px; text-align:center; }
+        .exec-card img { width:150px; height:150px; border-radius:50%; object-fit:cover; border:3px solid #FFD700; }
+        .exec-card h3 { color:#FFD700; margin:10px 0 5px 0; }
+        .exec-card h4 { color:#fff; font-size:14px; margin-bottom:10px; }
+        .exec-card p { color:#ccc; font-size:14px; }
+    </style>
+</head>
+<body>
+    <!-- SAME HEADER AS LANDING -->
+    <header class="navbar">
+        <div class="brand">
+            <h1>Golden Boiz Club of Nigeria</h1>
+            <p class="motto">Focus and Unity</p>
+        </div>
+        
+        <!-- NAV LINKS -->
+        <ul class="nav-links">
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/about}">About Us</a></li>
+            <li><a th:href="@{/executives}">Executives</a></li>
+            <li><a th:href="@{/news}">News</a></li>
+            <li><a th:href="@{/register}">Join Us</a></li>
+        </ul>
+
+        <!-- LOGO -->
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" style="width:80px; cursor:pointer;">
+        </a>
+    </header>
+
+    <main style="padding:60px 50px; max-width:1200px; margin:auto; background:#0a0a0a;">
+        <h1 style="color:#FFD700; text-align:center;">Meet The Executives</h1>
+        <p style="text-align:center; color:#ccc;">The leadership team of Golden Boiz Club of Nigeria</p>
+        
+        <p th:if="${#lists.isEmpty(executives)}" style="text-align:center; color:#ccc;">Executive profiles will be added soon.</p>
+
+        <div class="exec-grid">
+            <div th:each="exec : ${executives}" class="exec-card">
+                <img th:src="@{${exec.imageUrl}}" th:alt="${exec.fullName}"/>
+                <h3 th:text="${exec.fullName}"></h3>
+                <h4 th:text="${exec.position}"></h4>
+                <p th:text="${exec.bio}"></p>
+            </div>
+        </div>
+    </main>
+
+    <footer class="site-footer" style="background:#000; padding:20px; text-align:center;">
+        <p style="color:#ccc;">© 2026 Golden Boiz Club of Nigeria. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

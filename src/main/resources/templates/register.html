@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Join Golden Boiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <h1>Golden Boiz Registration</h1>
+        </div>
+        <header class="navbar">
+    <div class="brand">
+        <h1>Admin Dashboard</h1>
+        
+        <!-- DASHBOARD ACTION BUTTONS -->
+        <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+            <a th:href="@{/}" class="back-link" style="margin:0;">← View Site</a>
+            <a th:href="@{/admin/news}" class="btn-news">Manage News & Videos</a>
+        </div>
+
+        <!-- SEARCH BOX -->
+        <div class="search-box">
+            <form th:action="@{/admin}" method="get">
+                <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by Name, Phone, Email..." />
+                <button type="submit" class="btn-search">Search</button>
+                <a th:href="@{/admin}" class="btn-cancel">Clear</a>
+            </form>
+        </div>
+        <p class="motto">Member Applications</p>
+    </div>
+    
+    <!-- LOGO NOW LINKS TO HOME -->
+    <a th:href="@{/}">
+        <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" class="logo" style="cursor:pointer;">
+    </a>
+</header>
+    </header>
+
+    <main class="form-container">
+        <h2>Become a Member</h2>
+
+        <!-- SUCCESS MESSAGE POPUP -->
+        <div th:if="${success}" class="success-popup" id="successPopup">
+            <div class="success-content">
+                <h3>✅ Application Submitted Successfully!</h3>
+                <p>We will contact you soon.</p>
+                <button onclick="document.getElementById('successPopup').style.display='none'" class="btn-ok">OK</button>
+            </div>
+        </div>
+
+        <!-- FORM -->
+        <form th:action="@{/register}" th:object="${member}" method="post" class="register-form" th:unless="${success}">
+            <label>Full Name:</label>
+            <input type="text" th:field="*{fullName}" required>
+            
+            <label>Phone Number:</label>
+            <input type="tel" th:field="*{phone}" required>
+            
+            <label>Email:</label>
+            <input type="email" th:field="*{email}" required>
+            
+            <label>Occupation:</label>
+            <input type="text" th:field="*{occupation}">
+            
+            <label>City:</label>
+            <input type="text" th:field="*{city}">
+            
+            <button type="submit" class="btn">Submit Application</button>
+        </form>
+
+        <a th:href="@{/}" class="back-link">← Back to Homepage</a>
+    </main>
+</body>
+</html>

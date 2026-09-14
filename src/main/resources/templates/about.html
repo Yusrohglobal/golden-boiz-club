@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us - Golden Boiz Club of Nigeria</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #000; }
+        .brand h1 { color: #FFD700; margin: 0; font-size: 24px; }
+        .brand .motto { color: #fff; margin: 0; font-size: 12px; }
+        .nav-links { display: flex; list-style: none; gap: 25px; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { color: #FFD700; }
+    </style>
+</head>
+<body>
+    <!-- SAME HEADER AS LANDING -->
+    <header class="navbar">
+        <div class="brand">
+            <h1>Golden Boiz Club of Nigeria</h1>
+            <p class="motto">Focus and Unity</p>
+        </div>
+        
+        <!-- NAV LINKS -->
+        <ul class="nav-links">
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/about}">About Us</a></li>
+            <li><a th:href="@{/executives}">Executives</a></li>
+            <li><a th:href="@{/news}">News</a></li>
+            <li><a th:href="@{/register}">Join Us</a></li>
+        </ul>
+
+        <!-- LOGO -->
+        <a th:href="@{/}">
+            <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" style="width:80px; cursor:pointer;">
+        </a>
+    </header>
+
+    <main style="padding:60px 50px; max-width:1000px; margin:auto; color:#fff; background:#132E5A;">
+        <h1 style="color:#FFD700; text-align:center;">About Golden Boiz Club of Nigeria</h1>
+        <p class="motto" style="text-align:center; font-size:18px; color:#ccc;">Focus and Unity</p>
+        
+        <section style="margin-top:40px;">
+            <h2 style="color:#FFD700;">Our History</h2>
+            <p>Golden Boiz Club of Nigeria was founded on the principles of brotherhood, excellence, and community service. 
+            Since inception, we have been committed to uplifting our members and giving back to society.</p>
+        </section>
+        
+        <section style="margin-top:40px;">
+            <h2 style="color:#FFD700;">Our Mission</h2>
+            <p>To build a strong network of responsible, focused, and successful men who support each other in personal and professional growth while contributing positively to Nigeria.</p>
+        </section>
+        
+        <section style="margin-top:40px;">
+            <h2 style="color:#FFD700;">Our Vision</h2>
+            <p>To be the leading socio-cultural club in Nigeria known for integrity, unity, and impact.</p>
+        </section>
+        
+        <div style="text-align:center; margin-top:40px;">
+            <a th:href="@{/register}" class="btn" style="background:#FFD700; color:#000; padding:12px 30px; border-radius:5px; text-decoration:none;">Join Us Today</a>
+        </div>
+    </main>
+
+    <footer class="site-footer" style="background:#000; padding:20px; text-align:center;">
+        <p style="color:#ccc;">© 2026 Golden Boiz Club of Nigeria. All Rights Reserved.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title th:text="${news.title}">News Detail - Golden Boiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+</head>
+<body>
+    <div class="particles"><span></span><span></span></div>
+    <div class="form-container" style="max-width:900px;">
+        <a th:href="@{/news}" class="back-link">← Back to News</a>
+        <a th:href="@{/}" class="back-link">← Back to Home</a>
+
+        <h2 style="color:#FFD700; margin-top:20px;" th:text="${news.title}"></h2>
+        <p><b>Category:</b> <span th:text="${news.category}"></span> | <span th:text="${#temporals.format(news.datePosted, 'dd MMM yyyy HH:mm')}"></span></p>
+        
+        <img th:if="${news.imageUrl}" th:src="@{${news.imageUrl}}" style="width:100%; border-radius:10px; margin:20px 0;"/>
+        
+        <div th:if="${news.category == 'VIDEO'}">
+            <iframe width="100%" height="500" th:src="${news.content}" frameborder="0" allowfullscreen></iframe>
+        </div>
+        
+        <p th:if="${news.category != 'VIDEO'}" th:text="${news.content}" style="line-height:1.8; font-size:16px; white-space: pre-line;"></p>
+
+    </div>
+</body>
+</html>

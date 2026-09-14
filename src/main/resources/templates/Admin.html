@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard - Golden Boiz</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        .status-pending { color: orange; font-weight: bold; }
+        .status-approved { color: #4CAF50; font-weight: bold; }
+        .status-rejected { color: red; font-weight: bold; }
+        .status-paid { color: #4CAF50; font-weight: bold; }
+        .status-unpaid { color: red; font-weight: bold; }
+        .btn-news { background: #FFD700; color: #000; padding: 8px 15px; border-radius: 5px; text-decoration: none; font-weight: bold; margin-left: 15px; }
+        .btn-approve { background: #4CAF50; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-size: 12px; }
+        .btn-reject { background: #f44336; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-size: 12px; }
+        .btn-edit { background: #2196F3; color: white; padding: 5px 10px; border-radius: 5px; text-decoration: none; font-size: 12px; }
+        .btn-delete { background: #555; color: white; padding: 5px 10px; border-radius: 5px; border: none; font-size: 12px; cursor: pointer; }
+        .delete-popup { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.6); justify-content:center; align-items:center; z-index:999; }
+        .delete-content { background:#fff; padding:20px; border-radius:10px; text-align:center; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <h1>Admin Dashboard</h1>
+            
+            <!-- DASHBOARD ACTION BUTTONS -->
+            <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                <a th:href="@{/}" class="back-link" style="margin:0;">← View Site</a>
+                <a th:href="@{/admin/news}" class="btn-news">Manage News & Videos</a>
+                <a th:href="@{/admin/executives}" class="btn">Manage Executives</a>
+            </div>
+
+            <!-- SEARCH BOX -->
+            <div class="search-box">
+                <form th:action="@{/admin}" method="get">
+                    <input type="text" name="keyword" th:value="${keyword}" placeholder="Search by Name, Phone, Email..." />
+                    <button type="submit" class="btn-search">Search</button>
+                    <a th:href="@{/admin}" class="btn-cancel">Clear</a>
+                </form>
+            </div>
+            <p class="motto">Member Applications</p>
+        </div>
+        <a th:href="@{/}">
+    <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" class="logo" style="cursor:pointer;">
+</a>
+    </header>
+
+    <main style="padding: 30px 50px;">
+        <h2>All Member Applications: <span th:text="${#lists.size(members)}"></span></h2>
+        
+        <div class="admin-container">
+            <table class="admin-table">
+                <thead>
+                    <tr>
+                        <th>S/N</th>
+                        <th>Full Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th>City</th>
+                        <th>Payment Status</th>
+                        <th>Member Status</th> <!-- STATUS SHOWS HERE -->
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                   <tr th:each="member, stat : ${members}">
+                        <td th:text="${stat.index + 1}"></td>
+                        <td th:text="${member.fullName}"></td>
+                        <td th:text="${member.phone}"></td>
+                        <td th:text="${member.email}"></td>
+                        <td th:text="${member.city}"></td>
+                        
+                        <!-- PAYMENT COLUMN -->
+                        <td>
+                            <span th:class="'status-' + ${#strings.toLowerCase(member.paymentStatus)}" 
+                                  th:text="${member.paymentStatus}"></span>
+                            <div th:if="${member.paymentReference}">
+                                <small th:text="'Ref: ' + ${member.paymentReference}"></small>
+                            </div>
+                            <div th:if="${member.paymentStatus == 'PENDING'}" class="action-buttons">
+                                <a th:href="@{/admin/approvePayment/{id}(id=${member.id})}" class="btn-approve">Approve Payment</a>
+                            </div>
+                        </td>
+
+                        <!-- MEMBER STATUS COLUMN - FIXED -->
+                        <td>
+                            <span th:class="'status-' + ${#strings.toLowerCase(member.status)}" 
+                                  th:text="${member.status}"></span>
+                            
+                            <div th:if="${member.status == 'APPROVED'}" style="font-size:12px; color:#4CAF50; margin-top:4px;">
+                                ✓ Active Member
+                            </div>
+                            <div th:if="${member.status == 'REJECTED'}" style="font-size:12px; color:red; margin-top:4px;">
+                                ✗ Not Accepted
+                            </div>
+                            <div th:if="${member.status == 'PENDING'}" style="font-size:12px; color:orange; margin-top:4px;">
+                                ⏳ Awaiting Review
+                            </div>
+                        </td>
+
+                        <!-- ACTION COLUMN - ONLY BUTTONS -->
+                        <td>
+                            <div class="action-buttons" style="display: flex; gap: 8px; flex-wrap: wrap;">
+                                <!-- Buttons ONLY show when PENDING -->
+                                <div th:if="${member.status == 'PENDING'}" style="display: flex; gap: 10px;">
+                                    <a th:href="@{/admin/approve/{id}(id=${member.id})}" class="btn-approve">Approve</a>
+                                    <a th:href="@{/admin/reject/{id}(id=${member.id})}" class="btn-reject">Reject</a>
+                                </div>
+
+                                <!-- These always show -->
+                                <a th:href="@{/admin/edit/{id}(id=${member.id})}" class="btn-edit">Edit</a>
+                                <button th:onclick="'showDeletePopup(' + ${member.id} + ')'" class="btn-delete">Delete</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+        <a th:href="@{/}" class="back-link">← Back to Homepage</a>
+
+        <!-- DELETE CONFIRMATION POPUP -->
+        <div id="deletePopup" class="delete-popup">
+            <div class="delete-content">
+                <h3>⚠️ Confirm Delete</h3>
+                <p>Are you sure you want to delete this member? This cannot be undone.</p>
+                <div class="popup-buttons">
+                    <a id="confirmDeleteBtn" href="#" class="btn-delete">Yes, Delete</a>
+                    <button onclick="hideDeletePopup()" class="btn-cancel">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            function showDeletePopup(id) {
+                document.getElementById('deletePopup').style.display = 'flex';
+                document.getElementById('confirmDeleteBtn').href = '/admin/delete/' + id;
+            }
+            function hideDeletePopup() {
+                document.getElementById('deletePopup').style.display = 'none';
+            }
+        </script>
+        
+    </main>
+</body>
+</html>

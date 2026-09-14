@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin - Manage Executives</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        body { background:#0a0a0a; color:#fff; }
+        .admin-container { max-width:1000px; margin:40px auto; padding:20px; }
+        .form-box { background:#132E5A; padding:30px; border-radius:10px; border:1px solid #FFD700; margin-bottom:40px; }
+        .form-box input, .form-box textarea { width:100%; padding:10px; margin:10px 0; border-radius:5px; border:none; }
+        .btn-save { background:#FFD700; color:#000; padding:10px 20px; border:none; border-radius:5px; font-weight:bold; cursor:pointer; }
+        .exec-table { width:100%; border-collapse: collapse; }
+        .exec-table th { background:#FFD700; color:#000; padding:10px; }
+        .exec-table td { background:#1a1a1a; padding:10px; border:1px solid #333; }
+        .exec-table img { width:60px; height:60px; border-radius:50%; object-fit:cover; }
+        .btn-delete { background:#f44336; color:white; padding:5px 10px; border-radius:5px; text-decoration:none; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+        <div class="brand">
+            <h1>Admin Panel</h1>
+        </div>
+        <ul class="nav-links">
+            <li><a th:href="@{/admin}">Dashboard</a></li>
+            <li><a th:href="@{/admin/news}">Manage News</a></li>
+            <li><a th:href="@{/admin/executives}">Manage Executives</a></li>
+            <li><a th:href="@{/}">View Site</a></li>
+        </ul>
+    </header>
+
+    <div class="admin-container">
+        <h2 style="color:#FFD700; text-align:center;">Manage Executives</h2>
+
+        <!-- ADD/EDIT FORM -->
+        <div class="form-box">
+            <h3>Add New Executive</h3>
+            <form th:action="@{/admin/executives/save}" th:object="${executive}" method="post" enctype="multipart/form-data">
+                <input type="hidden" th:field="*{id}"/>
+                
+                <label>Full Name</label>
+                <input type="text" th:field="*{fullName}" required/>
+                
+                <label>Position</label>
+                <input type="text" th:field="*{position}" placeholder="e.g. President" required/>
+                
+                <label>Sort Order</label>
+                <input type="number" th:field="*{sortOrder}" placeholder="1 = President, 2 = Secretary"/>
+                
+                <label>Bio</label>
+                <textarea th:field="*{bio}" rows="3" placeholder="Short bio about the executive"></textarea>
+                
+                <label>Profile Picture</label>
+                <input type="file" name="imageFile" accept="image/*" required/>
+                
+                <button type="submit" class="btn-save">Save Executive</button>
+            </form>
+        </div>
+
+        <!-- LIST OF EXECUTIVES -->
+        <h3 style="color:#FFD700;">Current Executives</h3>
+        <table class="exec-table">
+            <thead>
+                <tr>
+                    <th>Photo</th>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Order</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="exec : ${allExecutives}">
+                    <td><img th:src="@{${exec.imageUrl}}" /></td>
+                    <td th:text="${exec.fullName}"></td>
+                    <td th:text="${exec.position}"></td>
+                    <td th:text="${exec.sortOrder}"></td>
+                    <td>
+                        <a th:href="@{/admin/executives/delete/{id}(id=${exec.id})}" 
+                           class="btn-delete"
+                           onclick="return confirm('Delete this executive?')">Delete</a>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

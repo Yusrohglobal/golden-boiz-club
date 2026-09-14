@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>News & Entertainment - Golden Boiz Club</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+    <link rel="stylesheet" th:href="@{/css/responsive.css}">
+    <style>
+        .btn-read { background:#FFD700; color:#000; padding:8px 15px; border-radius:5px; text-decoration:none; font-weight:bold; display:inline-block; margin-top:10px; }
+        .btn-read:hover { background:#fff; }
+            .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #000; }
+        .brand h1 { color: #FFD700; margin: 0; font-size: 24px; }
+        .brand .motto { color: #fff; margin: 0; font-size: 12px; }
+        .nav-links { display: flex; list-style: none; gap: 25px; }
+        .nav-links a { color: #fff; text-decoration: none; font-weight: bold; }
+        .nav-links a:hover { color: #FFD700; }
+    </style>
+</head>
+<body>
+    <header class="navbar">
+    <div class="brand">
+        <h1>Golden Boiz Club of Nigeria</h1>
+        <p class="motto">Focus and Unity</p>
+    </div>
+    
+    <ul class="nav-links">
+        <li><a th:href="@{/}">Home</a></li>
+        <li><a th:href="@{/about}">About Us</a></li>
+        <li><a th:href="@{/executives}">Executives</a></li>
+        <li><a th:href="@{/news}">News</a></li>
+        <li><a th:href="@{/register}">Join Us</a></li>
+    </ul>
+
+    <a th:href="@{/}">
+        <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" style="width:80px; cursor:pointer;">
+    </a>
+</header>
+    <div class="particles"><span></span><span></span></div>
+    <div class="form-container" style="max-width:900px;">
+        <h2>Club News & Entertainment</h2>
+        <a th:href="@{/}" class="back-link">← Back to Home</a>
+
+        <p th:if="${#lists.isEmpty(newsList)}" style="text-align:center; color:#ccc;">No news posted yet.</p>
+
+        <div th:each="n : ${newsList}" style="background:#132E5A; padding:20px; margin:20px 0; border-radius:10px; border:1px solid #FFD700;">
+            
+            <!-- Title now links to detail page -->
+            <h3 style="color:#FFD700;">
+                <a th:href="@{/news/{id}(id=${n.id})}" th:text="${n.title}" style="color:#FFD700; text-decoration:none;"></a>
+            </h3>
+
+            <p><b>Category:</b> <span th:text="${n.category}"></span> | <span th:text="${#temporals.format(n.datePosted, 'dd MMM yyyy')}"></span></p>
+            
+            <img th:if="${n.imageUrl}" th:src="@{${n.imageUrl}}" style="width:100%; border-radius:8px; margin:10px 0;"/>
+            
+            <!-- If VIDEO show iframe, else show short text -->
+            <div th:if="${n.category == 'VIDEO'}">
+                <iframe width="100%" height="315" th:src="${n.content}" frameborder="0" allowfullscreen></iframe>
+            </div>
+            
+            <p th:if="${n.category != 'VIDEO'}" th:text="${#strings.abbreviate(n.content, 250)}"></p>
+            
+            <!-- Read More button for text posts -->
+            <a th:if="${n.category != 'VIDEO'}" th:href="@{/news/{id}(id=${n.id})}" class="btn-read">Read More</a>
+        </div>
+    </div>
+</body>
+</html>
