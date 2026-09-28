@@ -2,18 +2,91 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- IMPORTANT FOR MOBILE -->
     <title>Golden Boiz Club of Nigeria</title>
     <link rel="stylesheet" th:href="@{/css/style.css}">
     <link rel="stylesheet" th:href="@{/css/responsive.css}">
     <style>
-        .navbar { display: flex; justify-content: space-between; align-items: center; padding: 15px 50px; background: #000; }
-        .nav-links { display: flex; list-style: none; gap: 25px; }
+        /* NAVBAR */
+        .navbar { 
+          display: flex; 
+          justify-content: space-between; 
+          align-items: center; 
+          padding: 15px 50px; 
+          background: #000; 
+          position: relative;
+        }
+        .brand h1 { color: #FFD700; font-size: 20px; margin: 0; }
+        .brand .motto { color: #ccc; font-size: 12px; margin: 0; }
+        
+        .nav-links { 
+          display: flex; 
+          list-style: none; 
+          gap: 25px; 
+          margin: 0;
+          padding: 0;
+        }
         .nav-links a { color: #fff; text-decoration: none; font-weight: bold; }
         .nav-links a:hover { color: #FFD700; }
+
+        .logo { width:80px; cursor:pointer; }
+
+        /* HAMBURGER BUTTON */
+        .menu-toggle {
+          display: none;
+          flex-direction: column;
+          gap: 5px;
+          background: none;
+          border: none;
+          cursor: pointer;
+        }
+        .menu-toggle span {
+          width: 25px;
+          height: 3px;
+          background: #FFD700;
+          border-radius: 2px;
+          transition: 0.3s;
+        }
+
+        /* OTHER STYLES */
         .news-card { background:#1a1a1a; border-radius:10px; overflow:hidden; border:1px solid #333; transition: transform 0.3s; }
         .news-card:hover { transform: translateY(-5px); }
-        .btn { background:#FFD700; color:#000; padding:12px 30px; border-radius:5px; text-decoration:none; font-weight:bold; }
+        .btn { background:#FFD700; color:#000; padding:12px 30px; border-radius:5px; text-decoration:none; font-weight:bold; display:inline-block; }
         .btn:hover { background:#fff; }
+
+        /* MOBILE RESPONSIVE */
+        @media (max-width: 900px) {
+          .navbar { padding: 15px 20px; }
+          .menu-toggle { display: flex; }
+
+          .nav-links {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            background: #111;
+            flex-direction: column;
+            align-items: center;
+            gap: 0;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out;
+            border-top: 1px solid #333;
+          }
+
+          .nav-links.active {
+            max-height: 400px;
+            padding: 10px 0;
+          }
+
+          .nav-links li {
+            width: 100%;
+            text-align: center;
+            padding: 14px 0;
+            border-bottom: 1px solid #222;
+          }
+          .brand h1 { font-size: 16px; }
+        }
     </style>
 </head>
 <body>
@@ -23,17 +96,25 @@
             <p class="motto">Focus and Unity</p>
         </div>
         
+        <!-- HAMBURGER BUTTON -->
+        <button class="menu-toggle" id="menu-toggle">
+          <span></span>
+          <span></span>
+          <span></span>
+        </button>
+
         <!-- NAV LINKS -->
-       <ul class="nav-links">
-    <li><a th:href="@{/}">Home</a></li>
-    <li><a th:href="@{/about}">About Us</a></li> <!-- NEW -->
-    <li><a th:href="@{/executives}">Executives</a></li> <!-- NEW -->
-    <li><a th:href="@{/news}">News</a></li>
-    <li><a th:href="@{/register}">Join Us</a></li>
-</ul>
-        <!-- LOGO NOW LINKS TO HOME -->
+       <ul class="nav-links" id="nav-links">
+          <li><a th:href="@{/}">Home</a></li>
+          <li><a th:href="@{/about}">About Us</a></li>
+          <li><a th:href="@{/executives}">Executives</a></li>
+          <li><a th:href="@{/news}">News</a></li>
+          <li><a th:href="@{/register}">Join Us</a></li>
+       </ul>
+
+        <!-- LOGO -->
         <a th:href="@{/}">
-            <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" class="logo" style="width:80px; cursor:pointer;">
+            <img th:src="@{/images/logo.svg}" alt="Golden Boiz Logo" class="logo">
         </a>
     </header>
 
@@ -41,20 +122,23 @@
         Application Submitted Successfully! We will contact you soon.
     </div>
 
-    <main style="text-align:center; padding: 60px 20px;">
+ <main class="hero-section" th:style="'background: linear-gradient(rgba(10,25,49,0.88), rgba(10,25,49,0.75)), url(' + @{/images/club-bg.jpeg} + ') center/cover no-repeat;'">
+    <div class="particles" id="particles"></div>
+    <div class="hero-overlay">
         <h2>Welcome to the Official Portal</h2>
-        <p>Building Excellence Through Brotherhood</p>
-        <a th:href="@{/register}" class="btn">Join Us</a>
-    </main>
+        <p style="color:#FFD700; font-weight:bold; letter-spacing:2px;">FOCUS AND UNITY</p>
+        <p>Building Excellence Through Brotherhood — Where prestige meets purpose.</p>
+        <a th:href="@{/register}" class="btn">Join Us Now</a>
+    </div>
+</main>
 
     <!-- LATEST NEWS SECTION -->
-    <section style="padding: 60px 50px; background: #0a0a0a;">
+    <section style="padding: 60px 20px; background: #0a0a0a;">
         <h2 style="text-align:center; color:#FFD700; margin-bottom:40px;">Latest News & Updates</h2>
         
-        <!-- Show message if no news -->
         <p th:if="${#lists.isEmpty(latestNews)}" style="text-align:center; color:#ccc;">No news posted yet. Check back soon!</p>
 
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; max-width:1200px; margin:0 auto;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 30px; max-width:1200px; margin:0 auto;">
             
             <div th:each="n : ${latestNews}" class="news-card">
                 <img th:if="${n.imageUrl}" th:src="@{${n.imageUrl}}" alt="News Image" style="width:100%; height:200px; object-fit:cover;"/>
@@ -98,7 +182,15 @@
     </div>
 
     <script>
-        const ADMIN_PASSWORD = "Golden2025"; // <-- CHANGE THIS PASSWORD
+        // MOBILE MENU TOGGLE
+        const menuToggle = document.getElementById('menu-toggle');
+        const navLinks = document.getElementById('nav-links');
+        menuToggle.addEventListener('click', () => {
+          navLinks.classList.toggle('active');
+        });
+
+        // ADMIN LOGIN
+        const ADMIN_PASSWORD = "Golden2025";
 
         function showAdminLogin() {
             document.getElementById('adminLoginPopup').style.display = 'flex';
@@ -112,12 +204,27 @@
             e.preventDefault();
             let password = document.getElementById('adminPassword').value;
             if (password === ADMIN_PASSWORD) {
-                window.location.href = "/admin"; // Go to admin page
+                window.location.href = "/admin";
             } else {
                 document.getElementById('errorMsg').style.display = 'block';
                 document.getElementById('adminPassword').value = '';
             }
         });
     </script>
+    <script>
+  // Gold dust particles
+  const container = document.getElementById('particles');
+  if(container){
+    for(let i=0; i<35; i++){
+      const p = document.createElement('div');
+      p.classList.add('particle');
+      p.style.left = Math.random()*100 + '%';
+      p.style.width = p.style.height = (Math.random()*4+2)+'px';
+      p.style.animationDuration = (Math.random()*10+12)+'s';
+      p.style.animationDelay = Math.random()*6+'s';
+      container.appendChild(p);
+    }
+  }
+</script>
 </body>
 </html>
